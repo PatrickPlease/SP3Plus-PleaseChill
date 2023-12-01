@@ -4,33 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaApplication {
-    private static final TextUI ui = new TextUI();
-
-    public static void tvShowPrinter() {
-        List<TvShow> tvShows = readTvShowsFromFile();
-
-
-        ui.displayMessage("TV Shows:");
-        int tIndex = 1;
-        for (TvShow tvShow : tvShows) {
-            ui.displayMessage(tIndex +"."+ tvShow.getTitle() + " - release year: " + tvShow.getStartYear() + "-" + tvShow.getEndYear());
-            tIndex++;
-        }
-    }
-
-    public static void moviesPrinter() {
-        List<Movies> movies = readMoviesFromFile();
-
-        ui.displayMessage("Movies:");
-        int mIndex = 1;
-        for (Movies movie : movies) {
-            ui.displayMessage(mIndex + ". " + movie.getTitle() + " - release year: " + movie.getReleaseYear());
-            mIndex++;
-        }
-    }
-
-
+public class DbIO {
     public static List<TvShow> readTvShowsFromFile() {
         List<TvShow> tvShows = new ArrayList<>();
 
@@ -52,7 +26,7 @@ public class MediaApplication {
                 int startYear = Integer.parseInt(years[0].trim());
 
                 // Check if there is an end year
-                int endYear = (years.length>1) ? Integer.parseInt(years[1].trim()) :startYear;
+                int endYear = (years.length > 1) ? Integer.parseInt(years[1].trim()) : startYear;
 
 
                 TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, totalSeasons);
@@ -95,5 +69,25 @@ public class MediaApplication {
         }
 
         return movies;
+    }
+    public static List<Integer> searchMovieInFile(String filePath, String searchTerm) {
+        List<Integer> foundIndexes = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/100bedstefilm.txt"))) {
+            String line;
+            int currentIndex = 0;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(searchTerm)) {
+                    foundIndexes.add(currentIndex);
+                }
+
+                currentIndex++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return foundIndexes;
     }
 }
