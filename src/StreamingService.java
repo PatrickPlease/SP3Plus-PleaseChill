@@ -172,7 +172,6 @@ public class StreamingService {
         }
     }
 
-
     public void wannaPlay(){
         ui.displayMessage("============================================= \n");
 

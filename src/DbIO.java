@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 
 public class DbIO {
 
+    static TextUI ui = new TextUI();
+
     static Connection connection;
     {
         try {
@@ -98,57 +100,89 @@ public class DbIO {
         }
     }
 
-    public static void addToWatchlist(User user, String newWatchlistItem) {
-        try (PrintWriter pWriter = new PrintWriter(new FileWriter("data/UserData/" + user.getUsername() + "_UserData.txt", true))) {
-            if (user != null) {
-                pWriter.println(newWatchlistItem);
+    public static void addToTvshowWatchlist(User user, String newTvshowID) {
+        if (user == null) {
+            System.out.println("Invalid user");
+            return;
+        }
+
+        try {
+            String username = user.getUsername();
+
+            String query = "INSERT INTO watched_tvshows (userID, tvshowID) VALUES (?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, newTvshowID);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    ui.displayMessage("Successfully added to watchlist");
+                } else {
+                    System.out.println("Failed to add to watchlist");
+                }
             }
-        } catch (IOException e) {
-            System.out.println("Something is wrong with the Watchlist file: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error adding to watchlist: " + e.getMessage());
         }
     }
-    
+
+    public static void addToMovieWatchlist(User user, String newMovieID) {
+        if (user == null) {
+            System.out.println("Invalid user");
+            return;
+        }
+
+        try {
+            String username = user.getUsername();
+
+            String query = "INSERT INTO watched_movies (userID, movieID) VALUES (?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, newMovieID);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    ui.displayMessage("Successfully added to watchlist");
+                } else {
+                    System.out.println("Failed to add to watchlist");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error adding to watchlist: " + e.getMessage());
+        }
+    }
+
     public static List<TvShow> readTvShowsFromFile() {
         List<TvShow> tvShows = new ArrayList<>();
 
-        try {
-            String command = "SELECT * FROM tvshows";
-            PreparedStatement preparedStatements = connection.prepareStatement(command);
-            ResultSet resultSet = preparedStatements.executeQuery();
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM tvshows")) {
 
             while (resultSet.next()) {
-                String title = resultSet.getString("Title");
-                String yearRange = resultSet.getString("Year");
-                String genre = resultSet.getString("Genre");
-                float rating = resultSet.getString("Rating");
-                String seasons = resultSet.getString("Seasons");
+                String title = resultSet.getString("title");
+                String yearRange = resultSet.getString("yearRange");
+                String genre = resultSet.getString("genre");
+                float rating = resultSet.getFloat("rating");
+                String episodeData = resultSet.getString("episodeData");
 
-
-                // Handling episodes
-                String[] episodeData = parts[4].split(",");
-                int totalSeasons = episodeData.length;
-
-                // Extracting start and end years from the year range
                 String[] years = yearRange.split("-");
                 int startYear = Integer.parseInt(years[0].trim());
-
-                // Check if there is an end year
                 int endYear = (years.length > 1) ? Integer.parseInt(years[1].trim()) : startYear;
 
+                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, 0); // Assuming totalSeasons is not available in the database
 
-                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, totalSeasons);
-
-                for (int i = 0; i < totalSeasons; i++) {
-                    String[] seasonData = episodeData[i].split("-");
-                    int seasonNumber = Integer.parseInt(seasonData[0].trim());
-                    int episodeCount = Integer.parseInt(seasonData[1].trim());
-
+                String[] seasonData = episodeData.split(",");
+                for (String episode : seasonData) {
+                    String[] episodeInfo = episode.split("-");
+                    int seasonNumber = Integer.parseInt(episodeInfo[0].trim());
+                    int episodeCount = Integer.parseInt(episodeInfo[1].trim());
                     tvShow.addSeason(seasonNumber, episodeCount);
                 }
 
                 tvShows.add(tvShow);
             }
-        } catch (IOException e) {
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
