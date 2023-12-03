@@ -192,41 +192,43 @@ public class DbIO {
     public static List<Movies> readMoviesFromFile() {
         List<Movies> movies = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/100bedstefilm.txt"))) {
-            String line;
 
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(";");
-                String title = parts[0].trim();
-                int releaseYear = Integer.parseInt(parts[1].trim());
-                String genre = parts[2].trim();
-                float rating = Float.parseFloat(parts[3].replace(",", ".").trim());
+        String query = "SELECT * FROM movies";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String title = resultSet.getString("title");
+                int releaseYear = resultSet.getInt("releaseYear");
+                String genre = resultSet.getString("genre");
+                float rating = resultSet.getFloat("rating");
 
                 Movies movie = new Movies(title, releaseYear, rating, genre);
                 movies.add(movie);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        } catch (SQLException e) {
+            System.out.println("Error reading movies from the database: " + e.getMessage());
         }
 
         return movies;
     }
+
     public static List<Integer> searchMovieInFile(String filePath, String searchTerm) {
         List<Integer> foundIndexes = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/100bedstefilm.txt"))) {
-            String line;
-            int currentIndex = 0;
+        String query = "SELECT * FROM movies WHERE title LIKE ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + searchTerm + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(searchTerm)) {
-                    foundIndexes.add(currentIndex);
-                }
-
-                currentIndex++;
+            while (resultSet.next()) {
+                int currentIndex = resultSet.getInt("id");
+                foundIndexes.add(currentIndex);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        } catch (SQLException e) {
+            System.out.println("Error searching for movies in the database: " + e.getMessage());
         }
 
         return foundIndexes;
