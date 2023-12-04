@@ -4,7 +4,7 @@ import java.util.List;
 public class TvShow extends Media {
     private final int startYear;
     private final int endYear;
-    private final List<Season> seasons;
+    private List<Season> seasons;
 
     public TvShow(String title, int startYear, int endYear, float rating, String genre, String seasons) {
         super(title, startYear, rating, genre, true);
@@ -25,7 +25,6 @@ public class TvShow extends Media {
     public int getEndYear() {
         return endYear;
     }
-
 }
 
 class Season {

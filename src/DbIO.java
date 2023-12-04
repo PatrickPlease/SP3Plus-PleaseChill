@@ -160,18 +160,17 @@ public class DbIO {
 
             while (resultSet.next()) {
                 String title = resultSet.getString("title");
-                String yearRange = resultSet.getString("yearRange");
+                String yearRange = resultSet.getString("yearRange").trim();
                 String genre = resultSet.getString("genre");
                 float rating = resultSet.getFloat("rating");
-                String episodeData = resultSet.getString("episodeData");
+                String seasons = resultSet.getString("seasons").trim();
 
                 String[] years = yearRange.split("-");
                 int startYear = Integer.parseInt(years[0].trim());
                 int endYear = (years.length > 1) ? Integer.parseInt(years[1].trim()) : startYear;
 
-                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, 0); // Assuming totalSeasons is not available in the database
-
-                String[] seasonData = episodeData.split(",");
+                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, seasons);
+                String[] seasonData = seasons.split(".");
                 for (String episode : seasonData) {
                     String[] episodeInfo = episode.split("-");
                     int seasonNumber = Integer.parseInt(episodeInfo[0].trim());
@@ -205,7 +204,7 @@ public class DbIO {
             movies.add(movie);
 
             }
-        } catch (IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
