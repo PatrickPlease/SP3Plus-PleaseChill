@@ -189,21 +189,21 @@ public class DbIO {
         return tvShows;
     }
 
-    public static List<Movies> readMoviesFromFile() {
-        List<Movies> movies = new ArrayList<>();
+    public static List<Movie> readMoviesFromFile() {
+        List<Movie> movies = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/100bedstefilm.txt"))) {
-            String line;
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM movies")) {
 
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(";");
-                String title = parts[0].trim();
-                int releaseYear = Integer.parseInt(parts[1].trim());
-                String genre = parts[2].trim();
-                float rating = Float.parseFloat(parts[3].replace(",", ".").trim());
+            while (resultSet.next()) {
+            String title = resultSet.getString("title");
+            int releaseYear = resultSet.getInt("releaseYear");
+            String genre = resultSet.getString("genre");
+            float rating = resultSet.getFloat("rating");
 
-                Movies movie = new Movies(title, releaseYear, rating, genre);
-                movies.add(movie);
+            Movie movie = new Movie(title, releaseYear, genre, rating);
+            movies.add(movie);
+
             }
         } catch (IOException e) {
             e.printStackTrace();

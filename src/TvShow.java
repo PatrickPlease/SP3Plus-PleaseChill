@@ -6,11 +6,11 @@ public class TvShow extends Media {
     private final int endYear;
     private final List<Season> seasons;
 
-    public TvShow(String title, int startYear, int endYear, float rating, String genre, int seasons) {
+    public TvShow(String title, int startYear, int endYear, float rating, String genre, String seasons) {
         super(title, startYear, rating, genre, true);
         this.startYear = startYear;
         this.endYear = endYear;
-        this.seasons = new ArrayList<>(seasons);
+        this.seasons = new ArrayList<>();
     }
 
     public void addSeason(int seasonNumber, int episodeCount) {

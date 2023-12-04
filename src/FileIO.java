@@ -2,10 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.List;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.List;
+/*
 
 public class FileIO {
 
@@ -88,7 +85,7 @@ public class FileIO {
                 int endYear = (years.length > 1) ? Integer.parseInt(years[1].trim()) : startYear;
 
 
-                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, totalSeasons);
+                TvShow tvShow = new TvShow(title, startYear, endYear, rating, genre, seasons);
 
                 for (int i = 0; i < totalSeasons; i++) {
                     String[] seasonData = episodeData[i].split("-");
@@ -107,8 +104,8 @@ public class FileIO {
         return tvShows;
     }
 
-    public static List<Movies> readMoviesFromFile() {
-        List<Movies> movies = new ArrayList<>();
+    public static List<Movie> readMoviesFromFile() {
+        List<Movie> movies = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("data/100bedstefilm.txt"))) {
             String line;
@@ -120,7 +117,7 @@ public class FileIO {
                 String genre = parts[2].trim();
                 float rating = Float.parseFloat(parts[3].replace(",", ".").trim());
 
-                Movies movie = new Movies(title, releaseYear, rating, genre);
+                Movie movie = new Movie(title, releaseYear, genre, rating);
                 movies.add(movie);
             }
         } catch (IOException e) {
@@ -149,4 +146,4 @@ public class FileIO {
 
         return foundIndexes;
     }
-}
+*/

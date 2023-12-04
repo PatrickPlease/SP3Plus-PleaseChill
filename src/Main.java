@@ -2,8 +2,8 @@ public class Main {
 
     public static void main(String[] args) {
         StreamingService user = new StreamingService();
-        DbIO db = new DbIO();
-        db.driver();
-        //user.setup();
+        //DbIO io = new DbIO();
+        user.mainpage();
+        //System.out.println(DbIO.readMoviesFromFile());
     }
 }

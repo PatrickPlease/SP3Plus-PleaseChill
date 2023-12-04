@@ -1,24 +1,22 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Watchlist {
+
+    DbIO io = new DbIO();
     private static TextUI ui = new TextUI();
     StreamingService streaming = new StreamingService();
 
     public void addToWatchlist(User user) {
-        List<Movies> movies = DbIO.readMoviesFromFile();
+        List<Movie> movies = io.readMoviesFromFile();
         String selectedMediaTitle = streaming.searchTerm;
         String watchlistItem = "Watchlist: " + selectedMediaTitle;;
 
-        List<String> userWatchlist = FileIO.readUserWatchlist(user.getUsername());
+        List<String> userWatchlist = io.readUserWatchlist(user.getUsername());
 
         if (userWatchlist != null) {
             userWatchlist.add(watchlistItem);
 
-            FileIO.saveUserWatchlist(user.getUsername(), userWatchlist);
+            io.saveUserWatchlist(user.getUsername(), userWatchlist);
             ui.displayMessage("Media is now added to your watchlist!");
             streaming.mainpage();
         } else {
@@ -27,7 +25,7 @@ public class Watchlist {
     }
 
     public void displayWatchlist(User user) {
-        List<String> userWatchlist = FileIO.readUserWatchlist(user.getUsername());
+        List<String> userWatchlist = io.readUserWatchlist(user.getUsername());
         if (userWatchlist != null) {
             ui.displayMessage("Movies/series in your watchlist:");
             for (String watchlistItem : userWatchlist) {

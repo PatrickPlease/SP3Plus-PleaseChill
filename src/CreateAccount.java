@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class CreateAccount {
+
+    private static DbIO io = new DbIO();
     private static TextUI ui = new TextUI();
 
     public static void createUser() {
@@ -21,7 +23,7 @@ public class CreateAccount {
         }
 
         User newUser = new User(username, password);
-        FileIO.saveUserData(newUser);
+        io.saveUserData(newUser);
 
         ui.displayMessage("Account created. Welcome!");
     }
