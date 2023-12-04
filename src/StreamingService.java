@@ -1,25 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 public class StreamingService {
+    //private FileIO io = new FileIO();
+    DbIO io = new DbIO();
     Category newCategory = new Category();
     MediaWindow newMediaWindow = new MediaWindow();
-    private FileIO io = new FileIO();
     private TextUI ui = new TextUI();
-    private List<TvShow> tvShows;
-    private List<Movies> movies;
+    public List<TvShow> tvShows;
+    private List<Movie> movies;
     static ArrayList<User> users = new ArrayList<>();
     private static User loggedInUser;
     private Watchlist watchlist;
     public String searchTerm;
 
     public void setup() {
-        tvShows = DbIO.readTvShowsFromFile();
-        movies = DbIO.readMoviesFromFile();
+        tvShows = io.readTvShowsFromFile();
+        movies = io.readMoviesFromFile();
         users = new ArrayList<>();
         Watchlist watchlist = new Watchlist();
 
@@ -60,8 +58,8 @@ public class StreamingService {
     }
 
     public void mainpage() {
-        tvShows = DbIO.readTvShowsFromFile();
-        movies = DbIO.readMoviesFromFile();
+        tvShows = io.readTvShowsFromFile();
+        movies = io.readMoviesFromFile();
 
         int mainpage = Integer.parseInt(ui.getInput(" 1. Search \n 2. Movies \n 3. Series \n 4. Log out"));
         switch (mainpage) {
@@ -110,8 +108,8 @@ public class StreamingService {
     }
 
     public void moviepage(){
-        tvShows = DbIO.readTvShowsFromFile();
-        movies = DbIO.readMoviesFromFile();
+        tvShows = io.readTvShowsFromFile();
+        movies = io.readMoviesFromFile();
 
         ui.displayMessage("============================================= \n");
         int moviepage = Integer.parseInt(ui.getInput(" 1. Popular \n 2. Trending \n 3. Genres  \n 4. Recently watched \n 5. Watchlist \n 6. Return "));
@@ -143,6 +141,8 @@ public class StreamingService {
     }
 
     public void seriespage() {
+        tvShows = io.readTvShowsFromFile();
+
         ui.displayMessage("============================================= \n");
         int seriespage = Integer.parseInt(ui.getInput(" 1. Popular \n 2. Trending \n 3. Genres  \n 4. Recently watched \n 5. Watchlist \n 6. Return "));
         switch (seriespage) {
@@ -172,11 +172,10 @@ public class StreamingService {
         }
     }
 
-
     public void wannaPlay(){
         ui.displayMessage("============================================= \n");
 
-        searchTerm = ui.getInput("Enter the media number you want to play: ");
+        searchTerm =  ui.getInput("Enter the media number you want to play: ");
 
         ui.displayMessage("Wanna play media?");
         int wannaPlay = Integer.parseInt(ui.getInput(" 1. Yes \n 2. No \n 3. Add to watchlist\n" ));

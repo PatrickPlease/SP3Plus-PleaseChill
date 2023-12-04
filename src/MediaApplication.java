@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MediaApplication {
@@ -19,11 +15,11 @@ public class MediaApplication {
     }
 
     public static void moviesPrinter() {
-        List<Movies> movies = DbIO.readMoviesFromFile();
+        List<Movie> movies = DbIO.readMoviesFromFile();
 
         ui.displayMessage("Movies:");
         int mIndex = 1;
-        for (Movies movie : movies) {
+        for (Movie movie : movies) {
             ui.displayMessage(mIndex + ". " + movie.getTitle() + " - release year: " + movie.getReleaseYear());
             mIndex++;
         }

@@ -4,13 +4,13 @@ import java.util.List;
 public class TvShow extends Media {
     private final int startYear;
     private final int endYear;
-    private final List<Season> seasons;
+    private List<Season> seasons;
 
-    public TvShow(String title, int startYear, int endYear, float rating, String genre, int totalSeasons) {
+    public TvShow(String title, int startYear, int endYear, float rating, String genre, String seasons) {
         super(title, startYear, rating, genre, true);
         this.startYear = startYear;
         this.endYear = endYear;
-        this.seasons = new ArrayList<>(totalSeasons);
+        this.seasons = new ArrayList<>();
     }
 
     public void addSeason(int seasonNumber, int episodeCount) {
@@ -25,7 +25,6 @@ public class TvShow extends Media {
     public int getEndYear() {
         return endYear;
     }
-
 }
 
 class Season {
